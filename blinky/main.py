@@ -1,5 +1,6 @@
 import sys
 import pathlib
+import os
 from flask import Flask, redirect
 from pitop.pma import Button, LED
 from pitop.miniscreen import Miniscreen
@@ -19,10 +20,13 @@ def start_blink():
     print("blink")
     led.blink()
     miniscreen.display_multiline_text("Blinking... Press button to stop", font_size=12)
+    os.system("aplay " + assets_path + "/bell.wav")
+
 
 def stop_blink():
     print("stop")
     led.off()
+    os.system("espeak \"Excellent. I just turned off the led.\"")
     welcome()
 
 def welcome():
