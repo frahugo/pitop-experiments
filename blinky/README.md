@@ -16,7 +16,7 @@ Links:
 
 ## To run
 
-    python3 endpoint.py
+    python3 main.py
 
 ## To generate the QR code
 
