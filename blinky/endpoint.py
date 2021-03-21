@@ -1,14 +1,3 @@
-# Experiment with Python and Pi-top
-#
-# To generate the QR code:
-# https://barcode.tec-it.com/en/QRCode?data=http%3A%2F%2Fpi-top.local%3A5000%2F
-#
-# To convert to image for miniscreen:
-# > convert barcode.gif -gravity center -extent 128x64 -negate welcome.gif
-#
-# To run:
-# > python3 endpoint.py
-
 import sys
 import pathlib
 from flask import Flask, redirect
