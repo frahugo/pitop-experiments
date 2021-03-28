@@ -3,11 +3,15 @@ import os
 import pathlib
 import multiprocessing
 from hud_server import HudServer
+from api_server import ApiServerProcess
 from flask import Flask, redirect, request
 
 assets_path = pathlib.Path(__file__).parent.absolute().as_posix()
 home_page = open(assets_path + "/home.html").read()
 app = Flask(__name__)
+queue = multiprocessing.JoinableQueue()
+hud_server = HudServer(queue)
+api_server = ApiServerProcess(queue)
 
 # Pi-top interface
 
@@ -25,7 +29,9 @@ def stop_blink():
 
 def quit():
     print("quit")
+    queue.put("goodbye")
     queue.put(None)
+    api_server.terminate()
 
 # HTTP endpoints
 
@@ -57,10 +63,8 @@ def shutdown():
     return redirect("/")
 
 if __name__ == '__main__':
-    queue = multiprocessing.JoinableQueue()
-    server = HudServer(queue)
-
-    server.start()
+    hud_server.start()
+    api_server.start()
 
     welcome()
     app.run(host='0.0.0.0')

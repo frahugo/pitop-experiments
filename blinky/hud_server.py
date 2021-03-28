@@ -49,3 +49,6 @@ class HudServer(multiprocessing.Process):
         os.system("espeak \"Excellent. I just turned off the led.\"")
         self.welcome()
 
+    def goodbye(self):
+        print("HUD goodbye")
+        os.system("espeak \"Goodbye!\"")
