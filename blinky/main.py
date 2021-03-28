@@ -7,12 +7,7 @@ from flask import Flask, redirect, request
 
 assets_path = pathlib.Path(__file__).parent.absolute().as_posix()
 home_page = open(assets_path + "/home.html").read()
-
 app = Flask(__name__)
-queue = multiprocessing.JoinableQueue()
-server = HudServer(queue)
-
-server.start()
 
 # Pi-top interface
 
@@ -62,5 +57,10 @@ def shutdown():
     return redirect("/")
 
 if __name__ == '__main__':
+    queue = multiprocessing.JoinableQueue()
+    server = HudServer(queue)
+
+    server.start()
+
     welcome()
     app.run(host='0.0.0.0')
