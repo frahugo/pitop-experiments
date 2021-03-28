@@ -1,37 +1,32 @@
 import sys
-import pathlib
 import os
+import pathlib
+import multiprocessing
+from hud_server import HudServer
 from flask import Flask, redirect
-from pitop.pma import Button, LED
-from pitop.miniscreen import Miniscreen
-
-button = Button("D0")
-led = LED("D1")
-miniscreen = Miniscreen()
 
 assets_path = pathlib.Path(__file__).parent.absolute().as_posix()
 home_page = open(assets_path + "/home.html").read()
 
 app = Flask(__name__)
+queue = multiprocessing.JoinableQueue()
+server = HudServer(queue)
+
+server.start()
 
 # Pi-top interface
 
+def welcome():
+    print("welcome")
+    queue.put("welcome")
+
 def start_blink():
     print("blink")
-    led.blink()
-    miniscreen.display_multiline_text("Blinking... Press button to stop", font_size=12)
-    os.system("aplay " + assets_path + "/bell.wav")
-
+    queue.put("start_blink")
 
 def stop_blink():
     print("stop")
-    led.off()
-    os.system("espeak \"Excellent. I just turned off the led.\"")
-    welcome()
-
-def welcome():
-    print("welcome")
-    miniscreen.display_image_file(assets_path + "/welcome.gif")
+    queue.put("stop_blink")
 
 # HTTP endpoints
 
@@ -52,8 +47,6 @@ def blink():
 def stop():
     stop_blink()
     return redirect("/")
-
-button.when_pressed = stop_blink
 
 if __name__ == '__main__':
     welcome()
