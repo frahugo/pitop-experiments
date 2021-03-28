@@ -28,10 +28,13 @@ class HudServer(multiprocessing.Process):
                 print('Got message ', message)
                 func = getattr(self, message)
                 func()
+                self.queue.task_done()
 
-            self.queue.task_done()
         return
 
+    def welcome(self):
+        print("welcome")
+        self.miniscreen.display_image_file(self.assets_path + "/welcome.gif")
 
     def start_blink(self):
         print("blink")
@@ -40,14 +43,9 @@ class HudServer(multiprocessing.Process):
             "Blinking... Press button to stop", font_size=12)
         os.system("aplay " + self.assets_path + "/bell.wav")
 
-
     def stop_blink(self):
         print("stop")
         self.led.off()
         os.system("espeak \"Excellent. I just turned off the led.\"")
         self.welcome()
 
-
-    def welcome(self):
-        print("welcome")
-        self.miniscreen.display_image_file(self.assets_path + "/welcome.gif")
